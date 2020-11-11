@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pinyougou.dao.TbUserMapper" >
+  <resultMap id="BaseResultMap" type="com.pinyougou.entity.TbUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+    <result column="createdatetime" property="createdatetime" jdbcType="TIMESTAMP" />
+    <result column="modifydatetime" property="modifydatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, pwd, createdatetime, modifydatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pinyougou.entity.TbUser" >
+    insert into tb_user (id, name, pwd, 
+      createdatetime, modifydatetime)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{createdatetime,jdbcType=TIMESTAMP}, #{modifydatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pinyougou.entity.TbUser" >
+    insert into tb_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="pwd != null" >
+        pwd,
+      </if>
+      <if test="createdatetime != null" >
+        createdatetime,
+      </if>
+      <if test="modifydatetime != null" >
+        modifydatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="createdatetime != null" >
+        #{createdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydatetime != null" >
+        #{modifydatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pinyougou.entity.TbUser" >
+    update tb_user
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="createdatetime != null" >
+        createdatetime = #{createdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydatetime != null" >
+        modifydatetime = #{modifydatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pinyougou.entity.TbUser" >
+    update tb_user
+    set name = #{name,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      createdatetime = #{createdatetime,jdbcType=TIMESTAMP},
+      modifydatetime = #{modifydatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="userList" parameterType="com.pinyougou.entity.TbUser" resultMap="BaseResultMap">
+  	select * from tb_user
+  </select>
+  
+  <select id="count" resultType="int">
+  	select count(*) from tb_user
+  	<where>
+  		<if test="user.name != null and user.name != ''">
+  			and name like concat('%','${user.name}','%')  
+  		</if>
+  		<if test="startDate != null and startDate != ''">
+  			and createdatetime &gt;= #{startDate}
+  		</if>
+  		<if test="endDate != null and endDate != ''">
+  			and createdatetime &lt;= #{endDate}
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap">
+  	<bind name="key_offset" value="(page-1)*rows"></bind>
+  	select * from tb_user 
+  	<where>
+  		<if test="user.name != null and user.name != ''">
+  			and name like concat('%','${user.name}','%')  
+  		</if>
+  		<if test="startDate != null and startDate != ''">
+  			and createdatetime &gt;= #{startDate}
+  		</if>
+  		<if test="endDate != null and endDate != ''">
+  			and createdatetime &lt;= #{endDate}
+  		</if>
+  	</where>
+  	limit ${key_offset},${rows}
+  </select>
+  
+  
+</mapper>

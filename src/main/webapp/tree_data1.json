@@ -1,0 +1,21 @@
+[{
+	"id":1,
+	"text":"系统管理",
+	"children":[{
+		"id":13,
+		"text":"用户管理",
+		"url":"admin/sysUserList.jsp"
+	},{
+		"id":14,
+		"text":"角色管理",
+		"url":"admin/sysRoleList.jsp"
+	},{
+		"id":15,
+		"text":"权限管理",
+		"url":"admin/sysPermissionList.jsp"
+	},{
+		"id":16,
+		"text":"广告管理",
+		"url":"admin/contentList.jsp"
+	}]
+}]

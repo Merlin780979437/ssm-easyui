@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pinyougou.dao.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.pinyougou.entity.SysUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="usercode" property="usercode" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="locked" property="locked" jdbcType="CHAR" />
+  </resultMap>
+  
+  <resultMap id="BasePermissionResultMap" type="com.pinyougou.entity.SysPermission" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="percode" property="percode" jdbcType="VARCHAR" />
+    <result column="parentid" property="parentid" jdbcType="BIGINT" />
+    <result column="parentids" property="parentids" jdbcType="VARCHAR" />
+    <result column="sortstring" property="sortstring" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="CHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, usercode, username, password, salt, locked
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.pinyougou.entity.SysUser" >
+    insert into sys_user (id, usercode, username, 
+      password, salt, locked
+      )
+    values (#{id,jdbcType=VARCHAR}, #{usercode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{locked,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pinyougou.entity.SysUser" >
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="usercode != null" >
+        usercode,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="salt != null" >
+        salt,
+      </if>
+      <if test="locked != null" >
+        locked,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="usercode != null" >
+        #{usercode,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="locked != null" >
+        #{locked,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pinyougou.entity.SysUser" >
+    update sys_user
+    <set >
+      <if test="usercode != null" >
+        usercode = #{usercode,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="locked != null" >
+        locked = #{locked,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pinyougou.entity.SysUser" >
+    update sys_user
+    set usercode = #{usercode,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      locked = #{locked,jdbcType=CHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="findAll" parameterType="com.pinyougou.entity.SysUser" resultMap="BaseResultMap">
+  	select * from sys_user
+  </select>
+  
+  <select id="count" resultType="int">
+  	select count(*) from sys_user
+  	<where>
+  		<if test="sysUser.username != null and sysUser.username != ''">
+  			and username like concat('%', '${sysUser.username}', '%')
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap">
+  	<bind name="key_offset" value="(page-1)*rows"></bind>
+  	select * from sys_user
+  	<where>
+  		<if test="sysUser.username != null and sysUser.username != ''">
+  			and username like concat('%', '${sysUser.username}', '%')
+  		</if>
+  	</where>
+  	limit ${key_offset},${rows}
+  </select>
+  
+  <delete id="deleteUserAndRole" parameterType="string" >
+  	delete from sys_user_role where sys_user_id = #{userId}
+  </delete>
+  
+  <insert id="addUserAndRole" parameterType="java.util.HashMap" >
+  	insert into sys_user_role(id, sys_user_id, sys_role_id) values (#{id}, #{userId}, #{roleId})
+  </insert>
+  
+  <select id="findSysUserByUsercode" parameterType="com.pinyougou.entity.SysUser" resultMap="BaseResultMap">
+  	select * from sys_user where usercode = #{usercode}
+  </select>
+  
+  <select id="findPermissionByUserId" parameterType="com.pinyougou.entity.SysUser" resultMap="BasePermissionResultMap">
+  	select p.* from sys_user_role ur, sys_role_permission rp, sys_permission p where ur.sys_role_id = rp.sys_role_id and rp.sys_permission_id = p.id
+  	and ur.sys_user_id = #{id} and type="permission"
+  </select>
+</mapper>
